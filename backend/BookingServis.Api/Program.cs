@@ -59,6 +59,9 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+// Seed roles into the database
+await DbInitializer.SeedRolesAsync(app.Services);
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
