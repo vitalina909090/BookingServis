@@ -23,6 +23,10 @@ builder.Services
     {
         options.User.RequireUniqueEmail = true;
         options.Password.RequiredLength = 8;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireUppercase = true;
     })
     .AddRoles<IdentityRole<Guid>>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -33,7 +37,8 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptio
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddHttpContextAccessor();
 
-var jwt = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()!;
+var jwt = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()
+    ?? throw new InvalidOperationException("Missing 'Jwt' configuration section.");
 
 // Token validation for incoming requests
 builder.Services
