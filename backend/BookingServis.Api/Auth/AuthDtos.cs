@@ -3,19 +3,21 @@
 namespace BookingServis.Api.Auth;
 
 public record RegisterRequest(
-    [property: Required, EmailAddress] string Email,
-    [property: Required, MinLength(8)] string Password,
-    [property: Required, MaxLength(200)] string FullName,
-    string? PhoneNumber);
+    [Required, EmailAddress, MaxLength(256)] string Email,
+    [Required, MaxLength(128)] string Password,
+    [Required, MinLength(2), MaxLength(100)] string FirstName,
+    [Required, MinLength(2), MaxLength(100)] string LastName,
+    [MaxLength(32)] string? PhoneNumber);
 
 public record LoginRequest(
-    [property: Required, EmailAddress] string Email,
-    [property: Required] string Password);
+    [Required, EmailAddress] string Email,
+    [Required] string Password);
 
 public record UserDto(
     Guid Id,
     string Email,
-    string FullName,
+    string FirstName,
+    string LastName,
     string? PhoneNumber,
     IReadOnlyList<string> Roles);
 
