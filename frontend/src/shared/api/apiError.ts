@@ -1,20 +1,28 @@
 export type ProblemBody = {
   title?: string;
-  errors?: Record<string, string[]>;
 };
 
 export class ApiError extends Error {
   status: number;
-  fieldErrors: Record<string, string[]>;
 
-  constructor(status: number, message: string, fieldErrors: Record<string, string[]> = {}) {
+  constructor(status: number, message: string) {
     super(message);
+    this.name = "ApiError";
     this.status = status;
-    this.fieldErrors = fieldErrors;
   }
+}
 
-  get allMessages(): string[] {
-    const fromFields = Object.values(this.fieldErrors).flat();
-    return fromFields.length > 0 ? fromFields : [this.message];
+const SHOWN_STATUSES = new Set([401, 409, 429]);
+
+export function getErrorMessage(error: unknown, fallback: string): string {
+  if (!(error instanceof ApiError)) {
+    return "Не вдалося виконати запит. Перевірте з’єднання та спробуйте ще раз";
   }
+  if (error.status >= 500) {
+    return "На сервері сталася помилка. Спробуйте пізніше";
+  }
+  if (SHOWN_STATUSES.has(error.status) && error.message) {
+    return error.message;
+  }
+  return fallback;
 }
