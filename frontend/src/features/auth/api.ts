@@ -22,7 +22,13 @@ export function useRegister() {
     mutationFn: (values: RegisterValues) =>
       apiFetch<AuthResponse>("/api/auth/register", {
         method: "POST",
-        body: JSON.stringify({ ...values, phoneNumber: values.phoneNumber || null }),
+        body: JSON.stringify({
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          phoneNumber: values.phoneNumber || null,
+          password: values.password,
+        }),
       }),
     onSuccess: (data) => setAuth(data.accessToken, data.user),
   });
